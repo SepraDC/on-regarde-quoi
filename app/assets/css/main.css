@@ -1,0 +1,92 @@
+/* DA « Guichet » : marquise à ampoules, velours bordeaux, tickets papier, laiton. Un seul thème, sombre. */
+:root {
+  --bg: #2a0d12;
+  --velvet: #5c1b27;
+  --fg: #f3e7cf;
+  --paper: #f3e7cf;
+  --ink: #2b1a12;
+  --gold: #d9a945;
+  --gold-shadow: #6b4a14;
+  --bulb: #ffe7a3;
+  --rust: #8a2a1a;
+  --display: 'Limelight', Georgia, serif;
+  --body: 'Courier Prime', 'Courier New', monospace;
+  --gutter-l: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  background: radial-gradient(120% 55% at 50% 0%, var(--velvet) 0%, var(--bg) 62%) fixed, var(--bg);
+  color: var(--fg);
+  font-family: var(--body);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+button:disabled { cursor: default; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+.screen {
+  max-width: 520px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+  padding-left: var(--gutter-l);
+  padding-right: var(--gutter-r);
+}
+.bleed { margin-left: calc(-1 * var(--gutter-l)); margin-right: calc(-1 * var(--gutter-r)); }
+
+.text-btn {
+  border: 0;
+  background: none;
+  padding: 6px 0;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+.brass {
+  align-self: center;
+  border: 0;
+  border-radius: 999px;
+  padding: 16px 30px;
+  font: 400 20px var(--display);
+  color: var(--ink);
+  background: radial-gradient(circle at 35% 30%, #ffe9a8, var(--gold) 55%, #8a6420);
+  box-shadow: 0 6px 0 var(--gold-shadow), 0 12px 26px rgb(0 0 0 / 0.5);
+  transition: transform 0.08s, box-shadow 0.08s, opacity 0.2s;
+}
+.brass:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 2px 0 var(--gold-shadow), 0 6px 14px rgb(0 0 0 / 0.5); }
+.brass:disabled { opacity: 0.55; }
+
+/* Reflet holographique : les variables --hx / --hy viennent de useHolo. */
+.holo, .glare { position: absolute; inset: 0; pointer-events: none; border-radius: inherit; }
+.holo {
+  background: linear-gradient(115deg, transparent 22%, hsl(330 90% 70% / 0.55) 34%, hsl(200 95% 68% / 0.55) 44%, hsl(140 80% 66% / 0.5) 54%, hsl(48 95% 66% / 0.5) 64%, transparent 76%);
+  background-size: 260% 260%;
+  background-position: calc(var(--hx, 0.5) * 100%) calc(var(--hy, 0.5) * 100%);
+  mix-blend-mode: color-dodge;
+  opacity: 0.5;
+}
+.holo.soft { opacity: 0.22; }
+.glare {
+  background: radial-gradient(circle at calc(var(--hx, 0.5) * 100%) calc(var(--hy, 0.5) * 100%), rgb(255 255 255 / 0.5), transparent 48%);
+  mix-blend-mode: overlay;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

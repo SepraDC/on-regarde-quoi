@@ -1,0 +1,104 @@
+{
+  "app": {
+    "name": "What’s on tonight?",
+    "kicker": "Box office open"
+  },
+  "form": {
+    "label": "Link to your Letterboxd list",
+    "placeholder": "letterboxd.com/username/list/my-list",
+    "paste": "Paste",
+    "submit": "Open the box office",
+    "help": "Paste the link to a public list, or a boxd.it short link. On Android, you can also share the list from the Letterboxd app."
+  },
+  "errors": {
+    "invalid_url": "This link doesn’t lead to a Letterboxd list. It must contain /list/ or be a boxd.it short link to a list.",
+    "list_not_found": "List not found. Check that it still exists and is public.",
+    "empty": "This list is empty. Add films on Letterboxd, then come back.",
+    "letterboxd_unavailable": "Letterboxd isn’t responding right now. Try again in a few minutes.",
+    "tmdb_not_configured": "The TMDB key isn’t configured on the server (NUXT_TMDB_TOKEN variable).",
+    "unknown": "Couldn’t load the list. Check your connection and try again."
+  },
+  "loading": {
+    "title": "Dealing the tickets…",
+    "note": "The first time a list opens takes about ten seconds. After that it’s almost instant."
+  },
+  "deck": {
+    "films": "no films | {n} film | {n} films",
+    "soundOn": "Sound on",
+    "soundOff": "Sound off",
+    "changeList": "Change list",
+    "spin": "Spin the wheel",
+    "again": "Another ticket · {n}/{max}",
+    "done": "Tickets drawn",
+    "slotsLabel": "Drawn tickets",
+    "slot": "Ticket {n}",
+    "choose": "Pick",
+    "hintStart": "One film, one draw. | Up to {max} draws. A film only comes up once.",
+    "hintFlip": "Tap a ticket to flip it.",
+    "hintChoose": "Pick tonight’s film."
+  },
+  "card": {
+    "admit": "Admit one",
+    "runtime": "Runtime",
+    "unknownRuntime": "?",
+    "serial": "No. {n}",
+    "flipLabel": "Flip the ticket: {runtime}, {genres}"
+  },
+  "chosen": {
+    "kicker": "Now showing tonight",
+    "more": "Read more",
+    "letterboxd": "View on Letterboxd",
+    "restart": "Start over"
+  },
+  "footer": {
+    "tmdb": "This product uses the TMDB API but is not endorsed or certified by TMDB.",
+    "legal": "Legal notice"
+  },
+  "legal": {
+    "title": "Legal notice",
+    "back": "Back to the box office",
+    "publisher": {
+      "title": "Publisher",
+      "body": "Personal, non-commercial website published by {name}. In accordance with article 6-III-2 of the French law on confidence in the digital economy (LCEN), the publisher, acting in a non-professional capacity, has provided their contact details to the host."
+    },
+    "hosting": {
+      "title": "Hosting",
+      "country": "United States"
+    },
+    "data": {
+      "title": "Film data",
+      "tmdb": "Posters, runtimes, genres and synopses come from The Movie Database (TMDB).",
+      "letterboxd": "Lists are read from public Letterboxd pages. This site is not affiliated with or endorsed by Letterboxd. Letterboxd is a trademark of Letterboxd Limited.",
+      "posters": "Posters remain the property of their respective rights holders."
+    },
+    "privacy": {
+      "title": "Personal data",
+      "body": "No account, no analytics, no advertising cookies. Only these settings are kept, and only on your phone:",
+      "list": "the link to the last list you opened, so you don’t have to paste it again;",
+      "sound": "whether you turned the sound off;",
+      "lang": "the language you chose (orq_lang cookie).",
+      "server": "The server caches film information for 30 days to speed up later loads. This cache holds no personal data."
+    }
+  },
+  "genre": {
+    "28": "Action",
+    "12": "Adventure",
+    "16": "Animation",
+    "35": "Comedy",
+    "80": "Crime",
+    "99": "Documentary",
+    "18": "Drama",
+    "10751": "Family",
+    "14": "Fantasy",
+    "36": "History",
+    "27": "Horror",
+    "10402": "Music",
+    "9648": "Mystery",
+    "10749": "Romance",
+    "878": "Sci-Fi",
+    "10770": "TV Movie",
+    "53": "Thriller",
+    "10752": "War",
+    "37": "Western"
+  }
+}

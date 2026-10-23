@@ -1,0 +1,104 @@
+{
+  "app": {
+    "name": "On regarde quoi ?",
+    "kicker": "Guichet ouvert"
+  },
+  "form": {
+    "label": "Lien de votre liste Letterboxd",
+    "placeholder": "letterboxd.com/pseudo/list/ma-liste",
+    "paste": "Coller",
+    "submit": "Ouvrir le guichet",
+    "help": "Collez le lien d’une liste publique, ou un lien court boxd.it. Sur Android, vous pouvez aussi partager la liste depuis l’app Letterboxd."
+  },
+  "errors": {
+    "invalid_url": "Ce lien ne mène pas à une liste Letterboxd. Il doit contenir /list/ ou être un lien court boxd.it vers une liste.",
+    "list_not_found": "Liste introuvable. Vérifiez qu’elle existe toujours et qu’elle est publique.",
+    "empty": "Cette liste est vide. Ajoutez des films sur Letterboxd, puis revenez.",
+    "letterboxd_unavailable": "Letterboxd ne répond pas pour le moment. Réessayez dans quelques minutes.",
+    "tmdb_not_configured": "La clé TMDB n’est pas configurée sur le serveur (variable NUXT_TMDB_TOKEN).",
+    "unknown": "Impossible de charger la liste. Vérifiez votre connexion et réessayez."
+  },
+  "loading": {
+    "title": "On distribue les tickets…",
+    "note": "La première ouverture d’une liste prend une dizaine de secondes. Les suivantes sont presque immédiates."
+  },
+  "deck": {
+    "films": "aucun film | {n} film | {n} films",
+    "soundOn": "Son activé",
+    "soundOff": "Son coupé",
+    "changeList": "Changer de liste",
+    "spin": "Tourner la roue",
+    "again": "Un autre ticket · {n}/{max}",
+    "done": "Tickets tirés",
+    "slotsLabel": "Tickets tirés",
+    "slot": "Ticket {n}",
+    "choose": "Choisir",
+    "hintStart": "Un seul film, un seul tirage. | Jusqu’à {max} tirages. Un film ne sort qu’une fois.",
+    "hintFlip": "Touchez un ticket pour le retourner.",
+    "hintChoose": "Choisissez le film de ce soir."
+  },
+  "card": {
+    "admit": "Entrée",
+    "runtime": "Durée",
+    "unknownRuntime": "?",
+    "serial": "N° {n}",
+    "flipLabel": "Retourner le ticket : {runtime}, {genres}"
+  },
+  "chosen": {
+    "kicker": "Ce soir à l’affiche",
+    "more": "Lire la suite",
+    "letterboxd": "Voir sur Letterboxd",
+    "restart": "Recommencer"
+  },
+  "footer": {
+    "tmdb": "Ce produit utilise l’API TMDB mais n’est ni approuvé ni certifié par TMDB.",
+    "legal": "Mentions légales"
+  },
+  "legal": {
+    "title": "Mentions légales",
+    "back": "Retour au guichet",
+    "publisher": {
+      "title": "Éditeur",
+      "body": "Site personnel et non commercial, édité par {name}. Conformément à l’article 6-III-2 de la loi pour la confiance dans l’économie numérique, l’éditeur, qui agit à titre non professionnel, a communiqué ses coordonnées à l’hébergeur."
+    },
+    "hosting": {
+      "title": "Hébergement",
+      "country": "États-Unis"
+    },
+    "data": {
+      "title": "Données des films",
+      "tmdb": "Les affiches, durées, genres et synopsis viennent de The Movie Database (TMDB).",
+      "letterboxd": "Les listes sont lues depuis les pages publiques de Letterboxd. Ce site n’est ni affilié à Letterboxd, ni approuvé par Letterboxd. Letterboxd est une marque de Letterboxd Limited.",
+      "posters": "Les affiches restent la propriété de leurs ayants droit."
+    },
+    "privacy": {
+      "title": "Données personnelles",
+      "body": "Aucun compte, aucune mesure d’audience, aucun cookie publicitaire. Seuls ces réglages sont gardés, et uniquement sur votre téléphone :",
+      "list": "le lien de la dernière liste ouverte, pour ne pas avoir à le recoller ;",
+      "sound": "votre choix de couper ou non le son ;",
+      "lang": "la langue choisie (cookie orq_lang).",
+      "server": "Le serveur garde en cache les informations des films pendant 30 jours, pour accélérer les chargements suivants. Ce cache ne contient aucune donnée personnelle."
+    }
+  },
+  "genre": {
+    "28": "Action",
+    "12": "Aventure",
+    "16": "Animation",
+    "35": "Comédie",
+    "80": "Policier",
+    "99": "Documentaire",
+    "18": "Drame",
+    "10751": "Familial",
+    "14": "Fantastique",
+    "36": "Histoire",
+    "27": "Horreur",
+    "10402": "Musique",
+    "9648": "Mystère",
+    "10749": "Romance",
+    "878": "Science-fiction",
+    "10770": "Téléfilm",
+    "53": "Thriller",
+    "10752": "Guerre",
+    "37": "Western"
+  }
+}
