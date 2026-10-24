@@ -24,6 +24,7 @@
   },
   "deck": {
     "films": "aucun film | {n} film | {n} films",
+    "filmsOf": "aucun film sur {total} | {n} film sur {total} | {n} films sur {total}",
     "soundOn": "Son activé",
     "soundOff": "Son coupé",
     "changeList": "Changer de liste",
@@ -37,6 +38,12 @@
     "hintFlip": "Touchez un ticket pour le retourner.",
     "hintChoose": "Choisissez le film de ce soir."
   },
+  "filter": {
+    "label": "Durée",
+    "all": "Tous",
+    "max120": "2 h max",
+    "max90": "1 h 30 max"
+  },
   "card": {
     "admit": "Entrée",
     "runtime": "Durée",
@@ -47,6 +54,7 @@
   "chosen": {
     "kicker": "Ce soir à l’affiche",
     "more": "Lire la suite",
+    "less": "Voir moins",
     "letterboxd": "Voir sur Letterboxd",
     "restart": "Recommencer"
   },
@@ -75,6 +83,7 @@
       "title": "Données personnelles",
       "body": "Aucun compte, aucune mesure d’audience, aucun cookie publicitaire. Seuls ces réglages sont gardés, et uniquement sur votre téléphone :",
       "list": "le lien de la dernière liste ouverte, pour ne pas avoir à le recoller ;",
+      "draw": "le tirage en cours (la liste, les tickets tirés, le film choisi et le filtre de durée), oublié 6 h après votre dernière action ;",
       "sound": "votre choix de couper ou non le son ;",
       "lang": "la langue choisie (cookie orq_lang).",
       "server": "Le serveur garde en cache les informations des films pendant 30 jours, pour accélérer les chargements suivants. Ce cache ne contient aucune donnée personnelle."

@@ -1,21 +1,27 @@
 <script setup lang="ts">
 import type { Film, ListResponse } from '#shared/types/film'
 
-const props = defineProps<{ list: ListResponse['list'], films: Film[] }>()
-const emit = defineEmits<{ changeList: [] }>()
+const props = defineProps<{ list: ListResponse['list'], films: Film[], initial: DrawState }>()
+const emit = defineEmits<{ changeList: [], change: [state: DrawState] }>()
 
 const { t } = useI18n()
 const { muted, toggleMute, unlock, tick, ding, whoosh, fanfare } = useSound()
 const { requestGyro } = useHolo()
 
+const bySlug = (slugs: string[]) => slugs.flatMap(slug => props.films.filter(f => f.slug === slug))
+
 const wheel = ref<{ spin: (film: Film) => Promise<void> }>()
-const drawn = ref<Film[]>([])
-const flipped = ref(new Set<string>())
+const drawn = ref<Film[]>(bySlug(props.initial.drawn))
+const flipped = ref(new Set(props.initial.flipped))
 const dealtSlug = ref<string | null>(null)
-const chosen = ref<Film | null>(null)
+const chosen = ref<Film | null>(bySlug(props.initial.chosen ? [props.initial.chosen] : [])[0] ?? null)
+// Un film déjà choisi au retour sur l'app s'affiche tout de suite, sans animation ni fanfare.
+const instantChoice = ref(chosen.value !== null)
+const maxRuntime = ref<RuntimeLimit>(props.initial.maxRuntime)
 const spinning = ref(false)
 
-const max = computed(() => maxDraws(props.films))
+const pool = computed(() => props.films.filter(f => fitsRuntime(f, maxRuntime.value)))
+const max = computed(() => drawLimit(pool.value, drawn.value))
 const canSpin = computed(() => !spinning.value && drawn.value.length < max.value)
 const spinLabel = computed(() => {
   const n = drawn.value.length
@@ -27,6 +33,16 @@ const hint = computed(() => {
   if (!drawn.value.length) return t('deck.hintStart', { max: max.value }, max.value)
   return flipped.value.size ? t('deck.hintChoose') : t('deck.hintFlip')
 })
+const count = computed(() => maxRuntime.value === null
+  ? t('deck.films', props.films.length)
+  : t('deck.filmsOf', { total: props.films.length }, pool.value.length))
+
+watch([drawn, flipped, chosen, maxRuntime], () => emit('change', {
+  drawn: drawn.value.map(f => f.slug),
+  flipped: [...flipped.value],
+  chosen: chosen.value?.slug ?? null,
+  maxRuntime: maxRuntime.value,
+}), { deep: true })
 
 const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -34,7 +50,7 @@ async function spin() {
   if (!canSpin.value) return
   requestGyro()
   unlock()
-  const target = pickFilm(props.films, drawn.value)
+  const target = pickFilm(pool.value, drawn.value)
   if (!target) return
   spinning.value = true
   await wheel.value!.spin(target)
@@ -54,6 +70,7 @@ function flip(film: Film) {
 }
 
 function choose(film: Film) {
+  instantChoice.value = false
   chosen.value = film
   fanfare()
 }
@@ -63,6 +80,7 @@ function restart() {
   drawn.value = []
   flipped.value = new Set()
   dealtSlug.value = null
+  maxRuntime.value = null
 }
 </script>
 
@@ -71,8 +89,9 @@ function restart() {
     <MarqueeHeader :kicker="t('app.kicker')" />
     <div class="info">
       <p class="list-name">
-        {{ list.title }} · {{ t('deck.films', films.length) }}
+        {{ list.title }} · <span :class="{ filtered: maxRuntime !== null }">{{ count }}</span>
       </p>
+      <RuntimeFilter v-model="maxRuntime" :films="films" :disabled="spinning" />
       <div class="controls">
         <button type="button" class="text-btn" :aria-pressed="muted" @click="toggleMute">
           {{ muted ? t('deck.soundOff') : t('deck.soundOn') }}
@@ -87,7 +106,7 @@ function restart() {
       </div>
     </div>
 
-    <TicketWheel ref="wheel" class="bleed" :films="films" @tick="tick" />
+    <TicketWheel ref="wheel" class="bleed" :films="pool" @tick="tick" />
 
     <button type="button" class="brass" :disabled="!canSpin" @click="spin">
       {{ spinLabel }}
@@ -116,13 +135,14 @@ function restart() {
       {{ hint }}
     </p>
 
-    <ChosenOverlay v-if="chosen" :film="chosen" @restart="restart" />
+    <ChosenOverlay v-if="chosen" :film="chosen" :instant="instantChoice" @restart="restart" />
   </div>
 </template>
 
 <style scoped>
 .info { display: grid; gap: 2px; }
 .list-name { margin: 0; font-size: 13px; overflow-wrap: anywhere; }
+.filtered { color: var(--gold); font-weight: 700; }
 .controls { display: flex; flex-wrap: wrap; column-gap: 16px; }
 .controls a { color: inherit; text-decoration: none; }
 .slots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-items: start; }

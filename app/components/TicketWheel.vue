@@ -50,6 +50,12 @@ onMounted(async () => {
 })
 onBeforeUnmount(() => removeEventListener('resize', recenter))
 
+// Le filtre de durée change les films possibles : on rebat la bande sur place, sans la déplacer.
+watch(() => props.films, () => {
+  hitIndex.value = -1
+  strip.value = randomFilms(strip.value.length)
+})
+
 /** Fait défiler la roue et s'arrête sur `target`, déjà tiré au sort par l'appelant. */
 async function spin(target: Film) {
   hitIndex.value = -1

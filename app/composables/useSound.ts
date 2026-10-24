@@ -22,6 +22,26 @@ function blip(freq: number, duration: number, type: OscillatorType, volume: numb
   osc.stop(t + duration + 0.02)
 }
 
+/** Bruit court passé dans un filtre passe-bande : crans et verrou du réglage de durée. */
+function noise(duration: number, freq: number, q: number, volume: number, delay = 0) {
+  if (muted.value || !ctx) return
+  const t = ctx.currentTime + delay
+  const length = Math.ceil(ctx.sampleRate * duration)
+  const buffer = ctx.createBuffer(1, length, ctx.sampleRate)
+  const data = buffer.getChannelData(0)
+  for (let i = 0; i < length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / length) ** 3
+  const source = ctx.createBufferSource()
+  const filter = ctx.createBiquadFilter()
+  const gain = ctx.createGain()
+  filter.type = 'bandpass'
+  filter.frequency.value = freq
+  filter.Q.value = q
+  gain.gain.value = volume
+  source.buffer = buffer
+  source.connect(filter).connect(gain).connect(ctx.destination)
+  source.start(t)
+}
+
 export function useSound() {
   if (import.meta.client && !settingsLoaded) {
     settingsLoaded = true
@@ -58,6 +78,28 @@ export function useSound() {
     fanfare() {
       [523, 659, 784, 1047].forEach((f, i) => blip(f, 0.5, 'triangle', 0.09, i * 0.09))
       vibrate([40, 30, 40, 30, 90])
+    },
+    /** Cliquet : `steps` crans, puis un verrou (`lock`) ou, en relâchant, un petit ressort. */
+    ratchet(steps: number, lock: boolean) {
+      const gap = 0.07
+      for (let i = 0; i < steps; i++) {
+        const pitch = lock ? 3200 - i * 350 : 2400 + i * 350
+        noise(0.03, pitch, 6, 0.9, i * gap)
+        blip(pitch / 2, 0.02, 'square', 0.02, i * gap)
+      }
+      const end = steps * gap + 0.02
+      const clicks = Array.from({ length: steps }, () => [6, 60]).flat()
+      if (lock) {
+        noise(0.09, 420, 2, 1.4, end)
+        blip(140, 0.18, 'sine', 0.22, end)
+        blip(1900, 0.25, 'triangle', 0.025, end + 0.01)
+        vibrate([...clicks, 35])
+      }
+      else {
+        noise(0.12, 1600, 1, 0.5, end)
+        blip(260, 0.12, 'sine', 0.08, end)
+        vibrate([...clicks, 15])
+      }
     },
     whoosh() {
       if (muted.value || !ctx) return
