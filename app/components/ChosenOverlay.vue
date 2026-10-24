@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import type { Film } from '#shared/types/film'
 
-const props = defineProps<{ film: Film }>()
+// `instant` : au retour sur l'app, la fiche est déjà ouverte, sans l'animation d'entrée.
+const props = defineProps<{ film: Film, instant?: boolean }>()
 defineEmits<{ restart: [] }>()
 
 const { t, locale } = useI18n()
 const { follow } = useHolo()
-const open = ref(false)
+const open = ref(props.instant)
 const expanded = ref(false)
 const tilt = ref<HTMLElement>()
+const overviewEl = ref<HTMLElement>()
 
 const overview = computed(() => {
   const { fr, en } = props.film.overview
@@ -19,6 +21,13 @@ const meta = computed(() => [
   props.film.runtime && formatRuntime(props.film.runtime, locale.value),
   sortGenres(props.film.genreIds).slice(0, 2).map(id => t(`genre.${id}`)).join(', '),
 ].filter(Boolean).join(' · '))
+
+// En repliant, la page raccourcit : on garde le synopsis à l'écran au lieu de laisser le navigateur sauter.
+async function collapse() {
+  expanded.value = false
+  await nextTick()
+  overviewEl.value?.scrollIntoView({ block: 'nearest' })
+}
 
 onMounted(() => requestAnimationFrame(() => requestAnimationFrame(() => {
   open.value = true
@@ -44,12 +53,17 @@ onMounted(() => requestAnimationFrame(() => requestAnimationFrame(() => {
       <p class="meta">
         {{ meta }}
       </p>
-      <p v-if="overview" class="overview" :class="{ expanded }">
+      <p v-if="overview" ref="overviewEl" class="overview" :class="{ expanded }">
         {{ overview }}
       </p>
-      <button v-if="overview.length > 150 && !expanded" type="button" class="link" @click="expanded = true">
-        {{ t('chosen.more') }}
-      </button>
+      <template v-if="overview.length > 150">
+        <button v-if="expanded" type="button" class="link" @click="collapse">
+          {{ t('chosen.less') }}
+        </button>
+        <button v-else type="button" class="link" @click="expanded = true">
+          {{ t('chosen.more') }}
+        </button>
+      </template>
       <a class="primary" :href="film.letterboxdUrl" target="_blank" rel="noopener">{{ t('chosen.letterboxd') }}</a>
       <button type="button" class="link" @click="$emit('restart')">
         {{ t('chosen.restart') }}
@@ -111,6 +125,8 @@ onMounted(() => requestAnimationFrame(() => requestAnimationFrame(() => {
 h2 { margin: 4px 0 0; font: 400 32px / 1.05 var(--display); text-align: center; text-wrap: balance; }
 .meta { margin: 0; font-size: 14px; text-align: center; opacity: 0.85; }
 .overview {
+  /* Sans `flex: none`, le texte déplié (en overflow: hidden) rétrécit pour tenir dans l'écran au lieu d'allonger la page. */
+  flex: none;
   margin: 0;
   max-width: 34em;
   font-size: 14px;

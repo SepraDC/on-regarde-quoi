@@ -21,17 +21,22 @@ Nom : **« On regarde quoi ? »** (EN : *« What's on tonight? »*). Choisi sur 
 - **Android** : l'app installée apparaît dans le menu Partager. Partager une liste depuis l'app Letterboxd ouvre directement le deck (Web Share Target).
 - **iPhone** : copier-coller uniquement. Le copier-coller reste aussi disponible sur Android.
 - L'URL est retenue sur le téléphone (localStorage), avec un lien « changer de liste ».
-- Le contenu de la liste est relu à chaque visite, puisqu'elle change souvent.
+- Le contenu de la liste est relu à chaque nouvelle soirée, puisqu'elle change souvent. Pendant un tirage en cours, on garde la version déjà chargée (voir « Tirage gardé en mémoire »).
 - Pendant le chargement, une animation de cartes distribuées fait patienter.
 
 ### 2. Deck et tirage
 
 - Roue horizontale façon case opening, composée de cartes de dos. Dans la roue, le dos est coloré selon le genre principal, sans texte.
-- Le résultat est tiré au sort de façon équitable dans toute la liste. Une bande d'environ 60 cartes est ensuite construite pour s'arrêter dessus.
+- Le résultat est tiré au sort de façon équitable parmi les films qui passent le filtre de durée. Une bande d'environ 60 cartes est ensuite construite pour s'arrêter dessus.
 - Décélération animée par GSAP : léger dépassement, puis retour en place.
 - **Jusqu'à 3 tirages, chacun lancé à la main** (« Shuffle », puis « Ajouter un tirage »).
 - Pas de doublon dans une session, et pas de reroll.
-- Si la liste a moins de 3 films, le nombre de tirages est plafonné au nombre de films.
+- Si la liste (ou le filtre) laisse moins de 3 films, le nombre de tirages est plafonné au nombre de films disponibles, sans jamais descendre sous le nombre de cartes déjà tirées.
+- **Filtre de durée** : « Tous », « 2 h max » ou « 1 h 30 max » (seuil inclus), en petits tickets sous le nom de la liste. Variante E retenue sur le prototype, conservé sur la branche `prototype/filtre-duree` (`?variant=E`).
+  - Les films sans durée connue sont exclus dès qu'un filtre est actif. Un seuil qui ne laisse aucun film est grisé.
+  - La roue ne montre que les films retenus, et le compteur passe en doré : « 12 films sur 40 ».
+  - Le filtre peut changer à tout moment, sauf pendant que la roue tourne. Il ne touche que les tirages suivants : les cartes déjà tirées restent.
+  - Son de cliquet au réglage : un cran par seuil franchi, puis un verrou (ou un ressort en revenant à « Tous »). Silencieux quand le filtre est remis à zéro par « Recommencer » ou à la réouverture.
 - Chaque carte tirée glisse dans un emplacement sous la roue.
 - Son (tic à chaque carte qui passe, ding à l'arrêt), activé par défaut, avec un bouton muet.
 - Vibration sur Android uniquement : l'iPhone ne permet pas de faire vibrer depuis une page web.
@@ -47,9 +52,16 @@ Nom : **« On regarde quoi ? »** (EN : *« What's on tonight? »*). Choisi sur 
 ### 4. Carte choisie (plein écran)
 
 - Affiche en grand, titre, année, durée, genres.
-- Synopsis court (3 lignes, dépliable).
+- Synopsis court (3 lignes). « Lire la suite » allonge la page, qu'on fait défiler jusqu'aux boutons, et « Voir moins » le replie.
 - Un bouton **« Voir sur Letterboxd »**, qui mène à la page du film. Il n'existe pas d'URL web qui ouvre directement la fenêtre de review.
-- Un bouton discret **« Recommencer »**, qui ramène au deck.
+- Un bouton discret **« Recommencer »**, qui ramène au deck et remet le filtre de durée à « Tous ».
+
+### 5. Tirage gardé en mémoire
+
+- Le tirage survit à un rechargement ou à la fermeture de l'app : la liste chargée, les cartes tirées, celles retournées, le film choisi et le filtre sont gardés sur le téléphone (localStorage).
+- Il est oublié **6 h après la dernière action** (chargement, tirage, retournement, choix, filtre). Ça couvre un film long et une pause, sur des soirées de 21 h à 5 h avec plusieurs tirages.
+- Au retour, l'app rouvre sans relire Letterboxd, sans animation ni son. Si un film était choisi, sa fiche est déjà ouverte.
+- Le tirage n'est effacé que par « Recommencer », ou quand une **autre** liste a été chargée (formulaire ou partage Android). Revalider la même liste ramène au tirage en cours.
 
 ## Données
 
@@ -59,9 +71,9 @@ Nom : **« On regarde quoi ? »** (EN : *« What's on tonight? »*). Choisi sur 
   - La clé TMDb reste côté serveur.
   - La mention d'attribution TMDb doit être affichée.
 - **Repli** : si un film est introuvable sur TMDb, il reste dans le tirage, avec « durée inconnue » au dos et l'affiche Letterboxd au recto (`/film/<slug>/poster/std/<largeur>/`, qui renvoie du JSON).
-- **Cache** : les infos de chaque film sont gardées 30 jours, avec le slug comme clé. La liste elle-même n'est pas mise en cache.
+- **Cache** : les infos de chaque film sont gardées 30 jours, avec le slug comme clé. La liste elle-même n'est pas mise en cache côté serveur.
   - Le cache passe par le stockage intégré à Nuxt (`unstorage`) : stockage clé-valeur sur Vercel, fichiers sur le Raspberry Pi.
-- **Rien n'est mémorisé** en v1 : pas d'historique des tirages. Les films vus sont retirés à la main sur Letterboxd.
+- **Pas d'historique des tirages** : seul le tirage de la soirée est gardé, 6 h, sur le téléphone. Les films vus sont retirés à la main sur Letterboxd.
 - **Risque accepté** : lire automatiquement les pages de Letterboxd est contraire à ses conditions d'utilisation (clause anti-scraping). On reste discret, avec peu de requêtes et du cache.
 
 ## Cas limites
@@ -85,7 +97,7 @@ Cinéma rétro, variante **A « Guichet »** retenue sur le prototype. Le protot
 - **Ambiance :** marquise de cinéma à ampoules qui clignotent en chenillard, avec le nom en lettrage Art déco (Limelight) qui brille comme un néon. Fond velours bordeaux, filets et boutons dorés. Texte courant en machine à écrire (Courier Prime).
 - **Organisation :** tout tient sur un seul écran de téléphone, sans défilement. Vérifié en 390×844 et 360×740. De haut en bas :
   1. la marquise ;
-  2. le nom de la liste, le nombre de films et le bouton son ;
+  2. le nom de la liste, le nombre de films, le filtre de durée et le bouton son ;
   3. la roue, sur toute la largeur ;
   4. le gros bouton laiton (« Tourner la roue », puis « Un autre ticket · 2/3 ») ;
   5. une grille de 3 emplacements de tickets ;

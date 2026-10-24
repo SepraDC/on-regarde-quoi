@@ -42,6 +42,7 @@ useHead({ title: () => `${t('legal.title')} · ${t('app.name')}` })
       <p>{{ t('legal.privacy.body') }}</p>
       <ul>
         <li>{{ t('legal.privacy.list') }}</li>
+        <li>{{ t('legal.privacy.draw') }}</li>
         <li>{{ t('legal.privacy.sound') }}</li>
         <li>{{ t('legal.privacy.lang') }}</li>
       </ul>
